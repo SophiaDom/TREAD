@@ -386,7 +386,7 @@ function generateWindingWaypoints(lat, lng, radiusMetres, numPoints) {
 async function fetchOSRMRoute(coords) {
   const coordStr = coords.map(([lat,lng]) => `${lng},${lat}`).join(";");
   // Use CORS proxy to bypass CORS restrictions
-  const res = await fetch(`https://cors-anywhere.herokuapp.com/https://router.project-osrm.org/route/v1/foot/${coordStr}?overview=full&geometries=geojson&steps=false`);
+  const res = await fetch(`https://api.allorigins.win/raw?url=https://router.project-osrm.org/route/v1/foot/${coordStr}?overview=full&geometries=geojson&steps=false`);
   const data = await res.json();
   if (data.code !== "Ok" || !data.routes.length) throw new Error("No route.");
   return data.routes[0].geometry.coordinates.map(([lng,lat]) => [lat,lng]);
