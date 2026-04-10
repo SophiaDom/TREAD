@@ -12,34 +12,13 @@
 :root {
   --font-display: 'Asfalt', serif;
   --font-body:    'Space Grotesk', sans-serif;
-  
-  /* Safe area insets for notched devices */
-  --sat: env(safe-area-inset-top);
-  --sab: env(safe-area-inset-bottom);
-  --sal: env(safe-area-inset-left);
-  --sar: env(safe-area-inset-right);
-}
-
-html {
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
 }
 
 body {
   margin: 0;
-  padding: 0;
   overflow: hidden;
   font-family: var(--font-body);
   font-weight: 300;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 105vh;
-  height: 105dvh; /* Dynamic viewport height for mobile */
 }
 
 h1, h2, h3,
@@ -57,20 +36,15 @@ p, span, label, input, textarea, button,
 #swipeArea {
   display: flex;
   width: 200vw;
-  height: 105vh;
-  min-height: 105dvh;
+  height: 100vh;
   transform: translateX(0vw);
   transition: transform 300ms ease;
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 
 .panel {
   flex: 0 0 100vw;
   width: 100vw;
-  height: 105vh;
-  min-height: 105dvh;
+  height: 100vh;
   position: relative;
   overflow: hidden;
 }

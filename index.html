@@ -137,10 +137,14 @@
   <script src="js/script.js"></script>
   <script src="js/collage.js"></script>
   <script>
+    // Unregister ALL old service workers to clear cache
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js")
-        .then(() => console.log("SW registered"))
-        .catch((e) => console.warn("SW failed:", e));
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.unregister();
+          console.log("Service worker unregistered");
+        }
+      });
     }
   </script>
 </body>
