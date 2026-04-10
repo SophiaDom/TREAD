@@ -385,11 +385,36 @@ function generateWindingWaypoints(lat, lng, radiusMetres, numPoints) {
 
 async function fetchOSRMRoute(coords) {
   const coordStr = coords.map(([lat,lng]) => `${lng},${lat}`).join(";");
-  const res = await fetch(`https://router.project-osrm.org/route/v1/foot/${coordStr}?overview=full&geometries=geojson&steps=false`);
-  if (!res.ok) throw new Error(`OSRM ${res.status}`);
-  const data = await res.json();
-  if (data.code !== "Ok" || !data.routes.length) throw new Error("No route.");
-  return data.routes[0].geometry.coordinates.map(([lng,lat]) => [lat,lng]);
+  const url = `https://router.project-osrm.org/route/v1/foot/${coordStr}?overview=full&geometries=geojson&steps=false`;
+  
+  console.log("🗺️ Attempting route fetch...");
+  console.log("URL:", url);
+  console.log("Waypoints:", coords);
+  
+  try {
+    const res = await fetch(url);
+    console.log("✅ Response received, status:", res.status);
+    
+    if (!res.ok) {
+      console.error("❌ Bad response:", res.status, res.statusText);
+      throw new Error(`OSRM ${res.status}`);
+    }
+    
+    const data = await res.json();
+    console.log("📦 Data received:", data);
+    
+    if (data.code !== "Ok" || !data.routes.length) {
+      console.error("❌ OSRM error:", data.code, data.message);
+      throw new Error(`OSRM error: ${data.code}`);
+    }
+    
+    console.log("✅ Route calculated successfully!");
+    return data.routes[0].geometry.coordinates.map(([lng,lat]) => [lat,lng]);
+    
+  } catch (err) {
+    console.error("💥 Fetch failed:", err);
+    throw err;
+  }
 }
 
 
