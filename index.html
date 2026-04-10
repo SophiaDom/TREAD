@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -12,7 +12,6 @@
   <title>Tread</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
-  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="Tread" />
@@ -39,79 +38,82 @@
         <div class="gradient-wash" style="position:absolute;inset:0;z-index:1;pointer-events:none;"></div>
         <div id="quiz">
 
-          <!-- STEP 1 -->
-          <div class="qstep active">
-            <h2>HOW LONG DO YOU WANT TO WALK FOR?</h2>
+          <section class="qstep active" data-step="1">
+            <h2>How much time do you have?</h2>
+
             <div class="sliderRow">
-              <input type="range" id="timeSlider" min="10" max="120" step="5" value="55" />
+              <input id="timeSlider" type="range" min="10" max="120" step="5" value="55" />
               <div id="timeValue">55 minutes</div>
             </div>
-            <button class="nextBtn">NEXT</button>
-          </div>
 
-          <!-- STEP 2 -->
-          <div class="qstep">
-            <h2>HOW DO YOU FEEL TODAY?</h2>
-            <div class="choices">
+            <button class="nextBtn">Next</button>
+          </section>
+
+          <section class="qstep" data-step="2">
+            <h2>What's your current mood?</h2>
+
+            <div class="choices" data-name="q2_mood">
               <label class="choice">
                 <input type="radio" name="q2_mood" value="isolated" />
-                <span>ISOLATED</span>
+                <span>Isolated</span>
               </label>
+
               <label class="choice">
                 <input type="radio" name="q2_mood" value="curious" />
-                <span>CURIOUS</span>
+                <span>Curious</span>
               </label>
+
               <label class="choice">
                 <input type="radio" name="q2_mood" value="bored" />
-                <span>BORED</span>
+                <span>Bored</span>
               </label>
             </div>
-            <button class="nextBtn">NEXT</button>
-          </div>
+          </section>
 
-          <!-- STEP 3 -->
-          <div class="qstep">
-            <h2>WHAT ARE YOU HOPING TO GET OUT OF THIS WALK?</h2>
-            <div class="choices">
+          <section class="qstep" data-step="3">
+            <h2>Are you seeking connection or reflection?</h2>
+
+            <div class="choices" data-name="q3_intent">
               <label class="choice">
                 <input type="radio" name="q3_intent" value="connection" />
-                <span>CONNECTION TO THE WORLD AROUND ME</span>
+                <span>Connection</span>
               </label>
+
               <label class="choice">
                 <input type="radio" name="q3_intent" value="reflection" />
-                <span>REFLECTION ON MYSELF AND MY LIFE</span>
+                <span>Reflection</span>
               </label>
             </div>
-            <button class="nextBtn">NEXT</button>
-          </div>
+          </section>
 
-          <!-- STEP 4 -->
-          <div class="qstep">
-            <h2>WHICH OF THESE FEELS RIGHT TODAY?</h2>
-            <div class="choices">
+          <section class="qstep" data-step="4">
+            <h2>Do you feel like responding or noticing?</h2>
+
+            <div class="choices" data-name="q4_view">
               <label class="choice">
                 <input type="radio" name="q4_view" value="responding" />
-                <span>I WANT TO RESPOND TO THE WORLD</span>
+                <span>Responding</span>
               </label>
+
               <label class="choice">
                 <input type="radio" name="q4_view" value="noticing" />
-                <span>I WANT TO NOTICE THE WORLD</span>
+                <span>Noticing</span>
               </label>
             </div>
-            <button class="nextBtn">NEXT</button>
-          </div>
+          </section>
 
-          <!-- STEP 5 / FINAL -->
-          <div class="qstep">
-            <h2>CALCULATING YOUR ROUTE...</h2>
-            <div class="calculateSlider">
+          <section class="qstep" data-step="5">
+            <h2>Ready to TREAD?</h2>
+            <div class="calculateSlider vertical-slider">
               <div class="track"></div>
               <div class="thumb"></div>
             </div>
-          </div>
+          </section>
 
         </div>
+
         <div id="startMap" hidden></div>
+
       </div>
     </div>
 
@@ -136,7 +138,7 @@
   <script src="js/collage.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js")
+      navigator.serviceWorker.register("/sw.js")
         .then(() => console.log("SW registered"))
         .catch((e) => console.warn("SW failed:", e));
     }
