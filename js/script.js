@@ -258,17 +258,19 @@ function initVerticalSlider(sliderId, callback, thumbOffset) {
   // Default to 45 so beginSlider is completely unchanged
   const offset = thumbOffset !== undefined ? thumbOffset : 45;
 
-  thumb.addEventListener('mousedown', (e) => {
+  const onStart = (e) => {
     isDragging = true;
-    startY = e.clientY;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    startY = clientY;
     startBottom = parseFloat(thumb.style.bottom) || 0;
     slider.classList.add('dragging');
     e.preventDefault();
-  });
+  };
 
-  document.addEventListener('mousemove', (e) => {
+  const onMove = (e) => {
     if (!isDragging) return;
-    const deltaY = startY - e.clientY;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const deltaY = startY - clientY;
     let newBottom = startBottom + deltaY;
     newBottom = Math.max(0, Math.min(trackHeight, newBottom));
     thumb.style.bottom = newBottom + 'px';
@@ -288,9 +290,9 @@ function initVerticalSlider(sliderId, callback, thumbOffset) {
         slider.classList.remove('completed');
       }, 600);
     }
-  });
+  };
 
-  document.addEventListener('mouseup', () => {
+  const onEnd = () => {
     if (isDragging) {
       const currentBottom = parseFloat(thumb.style.bottom) || 0;
 
@@ -309,7 +311,18 @@ function initVerticalSlider(sliderId, callback, thumbOffset) {
       slider.classList.remove('dragging');
       isDragging = false;
     }
-  });
+  };
+
+  // Mouse events
+  thumb.addEventListener('mousedown', onStart);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+
+  // Touch events for mobile
+  thumb.addEventListener('touchstart', onStart, { passive: false });
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('touchend', onEnd);
+  document.addEventListener('touchcancel', onEnd);
 }
 
 // beginSlider: no thumbOffset passed → defaults to 45, exactly as before
