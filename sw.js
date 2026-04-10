@@ -1,17 +1,16 @@
 // Service Worker for TREAD PWA
 const CACHE_NAME = 'tread-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/script.js',
-  '/js/gradient.js',
-  '/js/prompts.js',
-  '/js/collage.js',
-  '/manifest.json'
+  './',
+  './index.html',
+  './css/style.css',
+  './js/script.js',
+  './js/gradient.js',
+  './js/prompts.js',
+  './js/collage.js',
+  './manifest.json'
 ];
 
-// Install event - cache resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -19,7 +18,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
@@ -27,7 +25,6 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
