@@ -1,0 +1,577 @@
+@font-face {
+  font-family: 'Asfalt';
+  src: url('../fonts/Extended_Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap');
+
+/* ── GLOBAL TYPOGRAPHY ───────────────────────────────── */
+:root {
+  --font-display: 'Asfalt', serif;
+  --font-body:    'Space Grotesk', sans-serif;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+
+h1, h2, h3,
+.qstep h2 {
+  font-family: var(--font-display);
+}
+
+p, span, label, input, textarea, button,
+.choice span, .entry, #entries {
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+
+/* SWIPE LAYOUT - now 2 panels: entrance and journal */
+#swipeArea {
+  display: flex;
+  width: 200vw;
+  height: 100vh;
+  transform: translateX(0vw);
+  transition: transform 300ms ease;
+}
+
+.panel {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ENTRANCE LAYOUT */
+#entrance {
+  overflow: hidden;
+  background: transparent;
+}
+
+#quiz-gradient-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+}
+
+#gradient-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* Gradient wash - different opacity for entrance vs quiz */
+.gradient-wash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(255,255,255, 0.15);
+  pointer-events: none;
+}
+
+/* Quiz gradient wash can be slightly more opaque for better readability */
+#start .gradient-wash {
+  background: rgba(255,255,255, 0.3);
+}
+
+#tread-title {
+  position: absolute;
+  top: 5vw;
+  left: 5vw;
+  height: clamp(55vh, 70vh, 85vh);
+  width: auto;
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+/* Hide title when quiz slides up */
+#entrance:has(#start.active) #tread-title {
+  opacity: 0;
+}
+
+#beginSlider {
+  position: absolute;
+  bottom: 5vh;
+  right: 15vw;
+  z-index: 10;
+  width: 20px;
+  height: 100px;
+  cursor: pointer;
+}
+
+@keyframes fillUp {
+  0% { height: 15%; border-radius: 100%; }
+  15% { height: 22%; border-radius: 30px; }
+  100% { height: 100%; border-radius: 30px; }
+}
+
+#beginSlider .track {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 45px;
+  height: 200%;
+  background: rgba(255,255,255,0);
+  border-radius: 30px;
+}
+
+#beginSlider .track::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--fill-percent, 0%);
+  background: linear-gradient(to top, transparent 0%, rgba(255,255,255,0.25) 50%);
+  border-radius: inherit;
+  animation: fillUp 3s infinite ease-in-out;
+}
+
+/* Disable animation during drag so CSS variable takes over */
+#beginSlider.dragging .track::before {
+  animation: none !important;
+}
+
+/* Disable animation after completion so it doesn't reset */
+#beginSlider.completed .track::before {
+  animation: none !important;
+}
+
+#beginSlider.completed .thumb {
+  animation: none !important;
+}
+
+#beginSlider .thumb {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 45px;
+  height: 45px;
+  background: rgba(255,255,255,0);
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0);
+  cursor: pointer;
+  transition: transform 0.1s;
+  animation: breathe 2s infinite ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#beginSlider .thumb:hover {
+  animation-play-state: paused;
+  transform: translateX(-50%) scale(1.2);
+}
+
+#beginSlider .thumb:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
+/* Hide beginSlider when quiz is open */
+#entrance:has(#start.active) #beginSlider {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* JOURNAL */
+#journal {
+  position: relative;
+  height: 100vh;
+  background: white;
+}
+
+#journal h2 {
+  position: absolute;
+  top: 5vh;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-family: 'Asfalt', serif;
+  font-size: clamp(2rem, 4vw, 10rem);
+  letter-spacing: 0.15em;
+  margin: 0;
+  z-index: 5;
+}
+
+#startNewBtn {
+  background: rgba(255,255,255,0.25);
+  border-radius: 999px;
+  border: 1.5px solid rgba(0,0,0);
+  color: black;
+  font-family: var(--font-body);
+  font-size: 3em;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  width: 1em;
+  height: 1em;
+  position: absolute;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease,
+              border-color 180ms ease, transform 120ms ease;
+  padding-left: 12px;
+}
+
+#startNewBtn:hover {
+  background: white;
+  color: black;
+  border: 1.5px solid black;
+  transform: translateX(-50%) scale(1.25);
+}
+
+/* START OVERLAY */
+#start {
+  position: absolute;
+  inset: 0;
+  background: white;
+  transform: translateY(100%);
+  transition: transform 400ms ease;
+  z-index: 5;
+  pointer-events: none;
+}
+
+#start.active {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#startMap {
+  width: 100%;
+  height: 100%;
+  filter: hue-rotate(-175deg) saturate(100%);
+}
+
+#quiz[hidden],
+#startMap[hidden] {
+  display: none !important;
+}
+
+/* ========================================= */
+/* QUIZ LAYOUT                               */
+/* ========================================= */
+
+.qstep {
+  display: none;
+  height: 100vh;
+  padding: 10vh 8vw;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.qstep.active {
+  display: flex;
+  animation: qstep-in 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes qstep-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.qstep h2 {
+  width: 90vw;
+  text-align: center;
+  margin: 0 auto;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 4rem);
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  color: black;
+}
+
+.sliderRow {
+  width: min(80vw, 420px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5vh;
+  margin: 0 auto;
+}
+
+#timeSlider {
+  width: 100%;
+  appearance: none;
+  height: 15px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.35);
+  outline: none;
+}
+
+#timeSlider::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  border: 1.5px solid rgba(0,0,0);
+  cursor: pointer;
+  transition: background 180ms ease, transform 150ms ease;
+}
+
+#timeSlider::-webkit-slider-thumb:hover {
+  background: white;
+}
+
+#timeSlider::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+  background: white;
+}
+
+#timeValue {
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: rgba(0,0,0);
+}
+
+.choices {
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.2vh;
+}
+
+.choice {
+  width: 100%;
+  text-align: center;
+  padding: 2em 0em;
+  border-radius: 999px;
+  border: 1.5px solid black;
+  background: rgba(255,255,255,0.15);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: black;
+  transition: border-color 160ms ease, background 160ms ease,
+              color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+}
+
+.choice:hover {
+  background: rgba(255,255,255,0.35);
+  border-color: black;
+  transform: scale(1.01);
+}
+
+.choice:active {
+  color: black;
+  border-color: black;
+  transform: scale(0.99);
+}
+
+.choice input {
+  display: none;
+}
+
+.choice:has(input:checked) {
+  color: black;
+  border-color: black;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  transform: scale(1.01);
+}
+
+.choice input:checked + span {
+  font-weight: 400;
+}
+
+/* FIX 1: Next button now matches .choice exactly */
+.nextBtn {
+  width: 80vw;
+  text-align: center;
+  padding: 2em 0;
+  border-radius: 999px;
+  border: 1.5px solid black;
+  background: rgba(255,255,255,0.15);
+  color: black;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  align-self: center;
+  transition: border-color 160ms ease, background 160ms ease,
+              color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+}
+
+.nextBtn:hover {
+  background: rgba(255,255,255,0.35);
+  border-color: black;
+  transform: scale(1.01);
+}
+
+.nextBtn:active {
+  transform: scale(0.99);
+}
+
+.calculateSlider {
+  /* FIX: container is positioned here; track and thumb are relative to it */
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 27vh;
+  cursor: pointer;
+}
+
+.calculateSlider .track {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 45px;
+  height: 100%;
+  background: rgba(255,255,255,0);
+  border-radius: 20px;
+}
+
+.calculateSlider .track::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--fill-percent, 0%);
+  background: linear-gradient(to top, transparent 0%, rgba(255,255,255,0.8) 100%);
+  border-radius: inherit;
+  animation: fillUp 3s infinite ease-in-out;
+}
+
+/* Disable animation during drag so CSS variable takes over */
+.calculateSlider.dragging .track::before {
+  animation: none !important;
+}
+
+/* Disable animation after completion so it doesn't reset */
+.calculateSlider.completed .track::before {
+  animation: none !important;
+}
+
+.calculateSlider.completed .thumb {
+  animation: none !important;
+}
+
+.calculateSlider .thumb {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 45px;
+  height: 45px;
+  background: rgba(255,255,255,0);
+  border-radius: 50%;
+  border: 2px solid black;
+  cursor: pointer;
+  transition: transform 0.1s;
+  animation: breathe 2s infinite ease-in-out;
+  z-index: 10;
+}
+
+.calculateSlider .thumb:hover {
+  animation-play-state: paused;
+  transform: translateX(-50%) scale(1.1);
+}
+
+/* JOURNAL ENTRIES STACK */
+#entries {
+  position: absolute;
+  top: 25vh;
+  left: 0;
+  right: 0;
+  bottom: 20vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 60px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.entries-wrapper {
+  position: relative;
+  width: 90vw;
+  padding-bottom: 60px;
+}
+
+.entry {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  border-radius: 18px;
+  border: 2px solid rgba(0,0,0,0.08);
+  background: white;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transition: transform 250ms ease, box-shadow 250ms ease;
+  cursor: pointer;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-top: -180px;
+}
+
+.entry:first-child {
+  margin-top: 60vh;
+  top: 55vh;
+}
+
+.entry.activeEntry {
+  transform: scale(1.02);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1000;
+}
+
+/* Stack naturally with negative margin to create overlap, oldest first in HTML, newest last (on top) */
+.entry:nth-child(1) { z-index: 10; }
+.entry:nth-child(2) { z-index: 20; }
+.entry:nth-child(3) { z-index: 30; }
+.entry:nth-child(4) { z-index: 40; }
+.entry:nth-child(5) { z-index: 50; }
+.entry:nth-child(6) { z-index: 60; }
+.entry:nth-child(7) { z-index: 70; }
+.entry:nth-child(8) { z-index: 80; }
+.entry:nth-child(9) { z-index: 90; }
+.entry:nth-child(10) { z-index: 100; }
+
+/* FIX 3: Direction arrow sits above everything including the wash */
+#tread-direction-arrow {
+  z-index: 1000 !important;
+}
+
+@media (min-width: 1050px) {
+  img {
+    width: 100vw;
+  }
+}

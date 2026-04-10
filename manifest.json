@@ -1,0 +1,22 @@
+{
+  "name": "Tread",
+  "short_name": "Tread",
+  "description": "A walking app that guides you toward self-actualization.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "tread-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "tread-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
