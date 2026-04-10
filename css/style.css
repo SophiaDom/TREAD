@@ -91,7 +91,7 @@ p, span, label, input, textarea, button,
 
 #tread-title {
   position: absolute;
-  top: 5vw;
+  top: 10vw;
   left: 5vw;
   height: clamp(55vh, 70vh, 85vh);
   width: auto;
@@ -233,7 +233,7 @@ p, span, label, input, textarea, button,
   cursor: pointer;
   transition: background 180ms ease, color 180ms ease,
               border-color 180ms ease, transform 120ms ease;
-  padding: 0;
+  padding: 0, 0, 10, 0;
   line-height: 1;
 }
 
