@@ -2,7 +2,7 @@
   "name": "Tread",
   "short_name": "Tread",
   "description": "A walking app that guides you toward self-actualization.",
-  "start_url": "/TREAD/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",

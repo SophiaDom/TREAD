@@ -1,14 +1,14 @@
 // Service Worker for TREAD PWA
-const CACHE_NAME = 'tread-v2';
+const CACHE_NAME = 'tread-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/script.js',
-  '/js/gradient.js',
-  '/js/prompts.js',
-  '/js/collage.js',
-  '/manifest.json'
+  './',
+  './index.html',
+  './css/style.css',
+  './js/script.js',
+  './js/gradient.js',
+  './js/prompts.js',
+  './js/collage.js',
+  './manifest.json'
 ];
 
 // Install event - cache resources

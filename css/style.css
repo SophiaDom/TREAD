@@ -51,6 +51,7 @@ p, span, label, input, textarea, button,
 
 /* ENTRANCE LAYOUT */
 #entrance {
+  overflow: hidden;
   background: transparent;
 }
 
@@ -91,7 +92,6 @@ p, span, label, input, textarea, button,
 #tread-title {
   position: absolute;
   top: 5vw;
-  margin-top: 5vh;
   left: 5vw;
   height: clamp(55vh, 70vh, 85vh);
   width: auto;
@@ -233,7 +233,7 @@ p, span, label, input, textarea, button,
   cursor: pointer;
   transition: background 180ms ease, color 180ms ease,
               border-color 180ms ease, transform 120ms ease;
-  padding-bottom: 10px;
+  padding: 0;
   line-height: 1;
 }
 
