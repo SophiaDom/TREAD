@@ -234,6 +234,7 @@ p, span, label, input, textarea, button,
   transition: background 180ms ease, color 180ms ease,
               border-color 180ms ease, transform 120ms ease;
   padding-left: 12px;
+  padding-bottom: 10px;
 }
 
 #startNewBtn:hover {
