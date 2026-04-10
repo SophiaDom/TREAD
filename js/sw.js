@@ -1,5 +1,5 @@
 // Service Worker for TREAD PWA
-const CACHE_NAME = 'tread-v1';
+const CACHE_NAME = 'tread-v2';
 const urlsToCache = [
   '/',
   '/index.html',
