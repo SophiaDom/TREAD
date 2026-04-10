@@ -385,13 +385,7 @@ function generateWindingWaypoints(lat, lng, radiusMetres, numPoints) {
 
 async function fetchOSRMRoute(coords) {
   const coordStr = coords.map(([lat,lng]) => `${lng},${lat}`).join(";");
-  // Try direct request with mode: 'cors'
-  const res = await fetch(`https://router.project-osrm.org/route/v1/foot/${coordStr}?overview=full&geometries=geojson&steps=false`, {
-    mode: 'cors',
-    headers: {
-      'Accept': 'application/json'
-    }
-  });
+  const res = await fetch(`https://router.project-osrm.org/route/v1/foot/${coordStr}?overview=full&geometries=geojson&steps=false`);
   if (!res.ok) throw new Error(`OSRM ${res.status}`);
   const data = await res.json();
   if (data.code !== "Ok" || !data.routes.length) throw new Error("No route.");
