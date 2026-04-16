@@ -15,20 +15,21 @@
   --sat: env(safe-area-inset-top);
 }
 
-html {
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
   height: 100%;
+  min-height: 100dvh;
   overflow: hidden;
+  background: black;
 }
 
 body {
-  margin: 0;
-  overflow: hidden;
   font-family: var(--font-body);
   font-weight: 300;
-  background: transparent;
-  height: 100%;
-  width: 100%;
   position: fixed;
+  inset: 0;
 }
 
 h1, h2, h3,
@@ -46,7 +47,7 @@ p, span, label, input, textarea, button,
 #swipeArea {
   display: flex;
   width: 200vw;
-  height: 100%;
+  height: 100dvh;
   transform: translateX(0vw);
   transition: transform 300ms ease;
   overflow: hidden;
@@ -56,7 +57,7 @@ p, span, label, input, textarea, button,
 .panel {
   flex: 0 0 100vw;
   width: 100vw;
-  height: 100%;
+  height: 100dvh;
   position: relative;
   overflow: hidden;
   touch-action: pan-x;
@@ -194,7 +195,7 @@ p, span, label, input, textarea, button,
 /* JOURNAL */
 #journal {
   position: relative;
-  height: 100vh;
+  height: 100dvh;
   background: white;
 }
 
@@ -277,8 +278,8 @@ p, span, label, input, textarea, button,
 
 .qstep {
   display: none;
-  height: 100vh;
-  padding: 10vh 8vw;
+  height: 100dvh;
+  padding: calc(10vh + env(safe-area-inset-top)) 8vw 10vh;
   box-sizing: border-box;
   position: relative;
   z-index: 2;
