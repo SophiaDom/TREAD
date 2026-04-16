@@ -1,14 +1,14 @@
 // Service Worker for TREAD PWA
-const CACHE_NAME = 'tread-v1';
+const CACHE_NAME = 'tread-v2';
 const urlsToCache = [
-  './',
-  './index.html',
-  './css/style.css',
-  './js/script.js',
-  './js/gradient.js',
-  './js/prompts.js',
-  './js/collage.js',
-  './manifest.json'
+  '/TREAD/',
+  '/TREAD/index.html',
+  '/TREAD/css/style.css',
+  '/TREAD/js/script.js',
+  '/TREAD/js/gradient.js',
+  '/TREAD/js/prompts.js',
+  '/TREAD/js/collage.js',
+  '/TREAD/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
