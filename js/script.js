@@ -836,30 +836,7 @@ function checkProximity(userLat, userLng) {
 }
 
 
-// ── CALCULATE & DRAW ROUTE ────────────────────────────────────────────────────
-
-async function calculateAndDrawRoute(lat, lng, minutes) {
-  // Clear any previous walk data
-  clearCurrentWalk();
-  
-  const basePoints = Math.max(1, Math.floor(minutes / 7));
-  const variation = Math.floor(Math.random() * 3) - 1;
-  const numPoints = Math.min(12, Math.max(1, basePoints + variation));  const waypoints = generateWindingWaypoints(lat, lng, radius, numPoints);
-  const loopCoords = [[lat, lng], ...waypoints, [lat, lng]];
-  const selectedPrompts = shuffleArray(selectPrompts(answers, numPoints));
-  
-  showMapInStartPanel();
-  startMap.setView([lat, lng], 15);
-
-  const mapDiv = document.getElementById("startMap");
-  const loadingEl = document.createElement("div");
-  loadingEl.textContent = "Calculating your route…";
-  loadingEl.style.cssText = "position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:white;padding:6px 14px;border-radius:8px;font-size:13px;z-index:9999;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,0.2);";
-  mapDiv.style.position = "relative";
-  mapDiv.appendChild(loadingEl);
-
-
-  function shuffleArray(arr) {
+function shuffleArray(arr) {
   const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -868,13 +845,40 @@ async function calculateAndDrawRoute(lat, lng, minutes) {
   return copy;
 }
 
+
+// ── CALCULATE & DRAW ROUTE ────────────────────────────────────────────────────
+
+async function calculateAndDrawRoute(lat, lng, minutes) {
+  // Clear any previous walk data
+  clearCurrentWalk();
+
+  const basePoints = Math.max(1, Math.floor(minutes / 7));
+  const variation = Math.floor(Math.random() * 3) - 1;
+  const numPoints = Math.min(12, Math.max(1, basePoints + variation));
+
+  const radius = minutesToRadius(minutes);
+  const waypoints = generateWindingWaypoints(lat, lng, radius, numPoints);
+  const loopCoords = [[lat, lng], ...waypoints, [lat, lng]];
+  const selectedPrompts = shuffleArray(selectPrompts(answers, numPoints));
+
+  showMapInStartPanel();
+  startMap.setView([lat, lng], 15);
+
+  const mapDiv = document.getElementById("startMap");
+  const loadingEl = document.createElement("div");
+  loadingEl.textContent = "Calculating your route…";
+  loadingEl.style.cssText =
+    "position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:white;padding:6px 14px;border-radius:8px;font-size:13px;z-index:9999;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,0.2);";
+  mapDiv.style.position = "relative";
+  mapDiv.appendChild(loadingEl);
+
   try {
     const fetchedPoints = await fetchOSRMRoute(loopCoords);
     routePoints = fetchedPoints;
-    
+
     // Store waypoint indices in the route for segment calculation
     waypointRouteIndices = findWaypointIndicesInRoute(waypoints, fetchedPoints);
-    
+
     if (routeLayer) startMap.removeLayer(routeLayer);
     if (completedRouteLayer) startMap.removeLayer(completedRouteLayer);
 
@@ -883,10 +887,14 @@ async function calculateAndDrawRoute(lat, lng, minutes) {
 
     // Fit bounds using waypoints + start so the full walk area is visible
     const allPoints = [[lat, lng], ...waypoints];
-    startMap.fitBounds(L.latLngBounds(allPoints), { padding:[60,60] });
+    startMap.fitBounds(L.latLngBounds(allPoints), { padding: [60, 60] });
 
     L.circleMarker([lat, lng], {
-      radius:8, fillColor:"#000", color:"#fff", weight:2, fillOpacity:1,
+      radius: 8,
+      fillColor: "#000",
+      color: "#fff",
+      weight: 2,
+      fillOpacity: 1,
     }).addTo(startMap).bindPopup("You start here").openPopup();
 
     activeWaypoints.forEach(wp => {
@@ -897,20 +905,24 @@ async function calculateAndDrawRoute(lat, lng, minutes) {
     finishBtnShown = false;
     document.getElementById("tread-finish-btn")?.remove();
 
-    // Create arrow immediately so it's ready before first GPS ping
     ensureArrow();
 
     waypoints.forEach((latlng, i) => {
       const prompt = selectedPrompts[i] || selectedPrompts[i % selectedPrompts.length];
       const wpColor = WAYPOINT_COLORS[Math.floor(Math.random() * WAYPOINT_COLORS.length)];
-      const marker = makeWaypointMarker(latlng, i+1, "pending", wpColor).addTo(startMap);
-      
-      // Add click handler to preview the prompt
-      marker.on('click', () => {
+      const marker = makeWaypointMarker(latlng, i + 1, "pending", wpColor).addTo(startMap);
+
+      marker.on("click", () => {
         showPromptCard(prompt, i + 1, waypoints.length);
       });
-      
-      activeWaypoints.push({ latlng, prompt, marker, state:"pending", color: wpColor });
+
+      activeWaypoints.push({
+        latlng,
+        prompt,
+        marker,
+        state: "pending",
+        color: wpColor
+      });
     });
 
   } catch (err) {
@@ -920,6 +932,7 @@ async function calculateAndDrawRoute(lat, lng, minutes) {
     loadingEl.remove();
   }
 }
+
 
 // ── PROGRESSIVE ROUTE REVEAL ──────────────────────────────────────────────────
 
