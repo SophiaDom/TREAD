@@ -12,6 +12,12 @@
 :root {
   --font-display: 'Asfalt', serif;
   --font-body:    'Space Grotesk', sans-serif;
+  --sat: env(safe-area-inset-top);
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -19,10 +25,10 @@ body {
   overflow: hidden;
   font-family: var(--font-body);
   font-weight: 300;
-  /* Extend background into the status bar */
-  background: #82d1e1; /* fallback — use one of your gradient colours */
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
+  background: transparent;
+  height: 100%;
+  width: 100%;
+  position: fixed;
 }
 
 h1, h2, h3,
@@ -36,21 +42,24 @@ p, span, label, input, textarea, button,
   font-weight: 300;
 }
 
-/* SWIPE LAYOUT - now 2 panels: entrance and journal */
+/* SWIPE LAYOUT - 2 panels: entrance and journal */
 #swipeArea {
   display: flex;
   width: 200vw;
-  height: 100vh;
+  height: 100%;
   transform: translateX(0vw);
   transition: transform 300ms ease;
+  overflow: hidden;
+  touch-action: pan-x;
 }
 
 .panel {
   flex: 0 0 100vw;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   position: relative;
   overflow: hidden;
+  touch-action: pan-x;
 }
 
 /* ENTRANCE LAYOUT */
@@ -59,21 +68,14 @@ p, span, label, input, textarea, button,
   background: transparent;
 }
 
+/* Canvas extends UP behind the status bar */
+#gradient-canvas,
 #quiz-gradient-canvas {
   position: absolute;
-  inset: 0;
+  top: calc(-1 * env(safe-area-inset-top));
+  left: 0;
   width: 100%;
-  height: 100%;
-  z-index: 0;
-  display: block;
-  pointer-events: none;
-}
-
-#gradient-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  height: calc(100% + env(safe-area-inset-top));
   z-index: 0;
   display: block;
   pointer-events: none;
@@ -148,12 +150,10 @@ p, span, label, input, textarea, button,
   animation: fillUp 3s infinite ease-in-out;
 }
 
-/* Disable animation during drag so CSS variable takes over */
 #beginSlider.dragging .track::before {
   animation: none !important;
 }
 
-/* Disable animation after completion so it doesn't reset */
 #beginSlider.completed .track::before {
   animation: none !important;
 }
@@ -183,10 +183,6 @@ p, span, label, input, textarea, button,
 #beginSlider .thumb:hover {
   animation-play-state: paused;
   transform: translateX(-50%) scale(1.2);
-}
-
-#beginSlider .thumb:hover {
-  transform: translateX(-50%) scale(1.1);
 }
 
 /* Hide beginSlider when quiz is open */
@@ -273,16 +269,6 @@ p, span, label, input, textarea, button,
 #quiz[hidden],
 #startMap[hidden] {
   display: none !important;
-}
-
-#entrance, #journal, #start {
-  padding-top: env(safe-area-inset-top);
-  box-sizing: border-box;
-}
-
-#gradient-canvas, #quiz-gradient-canvas {
-  top: calc(-1 * env(safe-area-inset-top));
-  height: calc(100% + env(safe-area-inset-top));
 }
 
 /* ========================================= */
@@ -421,7 +407,6 @@ p, span, label, input, textarea, button,
   font-weight: 400;
 }
 
-/* FIX 1: Next button now matches .choice exactly */
 .nextBtn {
   width: 80vw;
   text-align: center;
@@ -451,7 +436,6 @@ p, span, label, input, textarea, button,
 }
 
 .calculateSlider {
-  /* FIX: container is positioned here; track and thumb are relative to it */
   position: absolute;
   bottom: 10vh;
   left: 50%;
@@ -484,12 +468,10 @@ p, span, label, input, textarea, button,
   animation: fillUp 3s infinite ease-in-out;
 }
 
-/* Disable animation during drag so CSS variable takes over */
 .calculateSlider.dragging .track::before {
   animation: none !important;
 }
 
-/* Disable animation after completion so it doesn't reset */
 .calculateSlider.completed .track::before {
   animation: none !important;
 }
@@ -568,19 +550,18 @@ p, span, label, input, textarea, button,
   z-index: 1000;
 }
 
-/* Stack naturally with negative margin to create overlap, oldest first in HTML, newest last (on top) */
-.entry:nth-child(1) { z-index: 10; }
-.entry:nth-child(2) { z-index: 20; }
-.entry:nth-child(3) { z-index: 30; }
-.entry:nth-child(4) { z-index: 40; }
-.entry:nth-child(5) { z-index: 50; }
-.entry:nth-child(6) { z-index: 60; }
-.entry:nth-child(7) { z-index: 70; }
-.entry:nth-child(8) { z-index: 80; }
-.entry:nth-child(9) { z-index: 90; }
+.entry:nth-child(1)  { z-index: 10; }
+.entry:nth-child(2)  { z-index: 20; }
+.entry:nth-child(3)  { z-index: 30; }
+.entry:nth-child(4)  { z-index: 40; }
+.entry:nth-child(5)  { z-index: 50; }
+.entry:nth-child(6)  { z-index: 60; }
+.entry:nth-child(7)  { z-index: 70; }
+.entry:nth-child(8)  { z-index: 80; }
+.entry:nth-child(9)  { z-index: 90; }
 .entry:nth-child(10) { z-index: 100; }
 
-/* FIX 3: Direction arrow sits above everything including the wash */
+/* Direction arrow sits above everything */
 #tread-direction-arrow {
   z-index: 1000 !important;
 }
