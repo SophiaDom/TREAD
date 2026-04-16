@@ -367,19 +367,39 @@ function minutesToRadius(minutes) {
 function generateWindingWaypoints(lat, lng, radiusMetres, numPoints) {
   const R = 6371000;
   const waypoints = [];
-  const wobbled = Array.from({ length: numPoints }, (_, i) =>
-    (360 / numPoints) * i + ((i % 3) - 1) * (360 / numPoints) * 0.35
-  );
-  wobbled.forEach((bearingDeg, i) => {
-    const r = radiusMetres * (0.6 + (i % 4) * 0.15);
+
+  const baseRotation = Math.random() * 360;
+
+  for (let i = 0; i < numPoints; i++) {
+    const segment = 360 / numPoints;
+
+    const bearingDeg =
+      baseRotation +
+      i * segment +
+      (Math.random() - 0.5) * segment * 0.9;
+
+    const r = radiusMetres * (0.45 + Math.random() * 0.75);
+
     const bRad = (bearingDeg * Math.PI) / 180;
     const latRad = (lat * Math.PI) / 180;
     const lngRad = (lng * Math.PI) / 180;
     const d = r / R;
-    const newLat = Math.asin(Math.sin(latRad)*Math.cos(d) + Math.cos(latRad)*Math.sin(d)*Math.cos(bRad));
-    const newLng = lngRad + Math.atan2(Math.sin(bRad)*Math.sin(d)*Math.cos(latRad), Math.cos(d)-Math.sin(latRad)*Math.sin(newLat));
-    waypoints.push([(newLat*180)/Math.PI, (newLng*180)/Math.PI]);
-  });
+
+    const newLat = Math.asin(
+      Math.sin(latRad) * Math.cos(d) +
+      Math.cos(latRad) * Math.sin(d) * Math.cos(bRad)
+    );
+
+    const newLng =
+      lngRad +
+      Math.atan2(
+        Math.sin(bRad) * Math.sin(d) * Math.cos(latRad),
+        Math.cos(d) - Math.sin(latRad) * Math.sin(newLat)
+      );
+
+    waypoints.push([(newLat * 180) / Math.PI, (newLng * 180) / Math.PI]);
+  }
+
   return waypoints;
 }
 
@@ -822,12 +842,12 @@ async function calculateAndDrawRoute(lat, lng, minutes) {
   // Clear any previous walk data
   clearCurrentWalk();
   
-  const numPoints = Math.min(12, Math.max(1, Math.floor(minutes / 10)));
-  const radius = minutesToRadius(minutes);
-  const waypoints = generateWindingWaypoints(lat, lng, radius, numPoints);
+  const basePoints = Math.max(1, Math.floor(minutes / 7));
+  const variation = Math.floor(Math.random() * 3) - 1;
+  const numPoints = Math.min(12, Math.max(1, basePoints + variation));  const waypoints = generateWindingWaypoints(lat, lng, radius, numPoints);
   const loopCoords = [[lat, lng], ...waypoints, [lat, lng]];
-  const selectedPrompts = selectPrompts(answers, numPoints);
-
+  const selectedPrompts = shuffleArray(selectPrompts(answers, numPoints));
+  
   showMapInStartPanel();
   startMap.setView([lat, lng], 15);
 
@@ -837,6 +857,16 @@ async function calculateAndDrawRoute(lat, lng, minutes) {
   loadingEl.style.cssText = "position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:white;padding:6px 14px;border-radius:8px;font-size:13px;z-index:9999;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,0.2);";
   mapDiv.style.position = "relative";
   mapDiv.appendChild(loadingEl);
+
+
+  function shuffleArray(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
   try {
     const fetchedPoints = await fetchOSRMRoute(loopCoords);
