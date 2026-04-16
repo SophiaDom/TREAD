@@ -19,6 +19,10 @@ body {
   overflow: hidden;
   font-family: var(--font-body);
   font-weight: 300;
+  /* Extend background into the status bar */
+  background: #82d1e1; /* fallback — use one of your gradient colours */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 h1, h2, h3,
@@ -269,6 +273,16 @@ p, span, label, input, textarea, button,
 #quiz[hidden],
 #startMap[hidden] {
   display: none !important;
+}
+
+#entrance, #journal, #start {
+  padding-top: env(safe-area-inset-top);
+  box-sizing: border-box;
+}
+
+#gradient-canvas, #quiz-gradient-canvas {
+  top: calc(-1 * env(safe-area-inset-top));
+  height: calc(100% + env(safe-area-inset-top));
 }
 
 /* ========================================= */
